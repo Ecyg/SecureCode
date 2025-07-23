@@ -2,6 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const snippets = window.snippets;
     let currentId = window.currentId;
 
+    // Sidebar collapse/expand logic
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('collapsed');
+    });
+
     // Sidebar language dropdown logic (independent collapse/expand)
     const langSections = document.querySelectorAll('.lang-section');
     langSections.forEach((section, idx) => {

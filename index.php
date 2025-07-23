@@ -40,8 +40,9 @@ foreach ($snippets as $snippet) {
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<div class="container">
-    <aside class="sidebar">
+<div class="app-container">
+    <aside class="sidebar" id="sidebar">
+        <button id="sidebar-toggle" aria-label="Collapse sidebar">&#9776;</button>
         <h2>Snippets</h2>
         <div id="language-list">
             <?php foreach ($langGroups as $lang => $snippetsInLang): ?>
@@ -61,7 +62,7 @@ foreach ($snippets as $snippet) {
             <?php endforeach; ?>
         </div>
     </aside>
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         <h1><?= htmlspecialchars($currentSnippet['title']) ?></h1>
         <pre class="code-block"><code><?= htmlspecialchars($currentSnippet['code']) ?></code></pre>
         <div class="dropdown">
