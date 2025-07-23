@@ -192,5 +192,135 @@ if __name__ == "__main__":
             'https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure',
             'https://cheatsheetseries.owasp.org/cheatsheets/Information_Leakage.html'
         ]
+    ],
+    [
+        'id' => 9,
+        'title' => 'Server-Side Request Forgery (SSRF) (Ruby)',
+        'code' => 'require "net/http"
+require "uri"
+
+url = params[:url]
+uri = URI.parse(url)
+response = Net::HTTP.get_response(uri)
+render plain: response.body',
+        'vulnerability' => 'Server-Side Request Forgery (SSRF)',
+        'summary' => 'This Ruby code is vulnerable to SSRF because it fetches a URL provided by the user without validation, allowing access to internal resources.',
+        'resources' => [
+            'https://owasp.org/www-community/attacks/Server_Side_Request_Forgery',
+            'https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html'
+        ]
+    ],
+    [
+        'id' => 10,
+        'title' => 'XML External Entity (XXE) (Java)',
+        'code' => 'import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import java.io.StringReader;
+import javax.xml.parsers.DocumentBuilder;
+import org.xml.sax.InputSource;
+
+String xml = request.getParameter("xml");
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+DocumentBuilder db = dbf.newDocumentBuilder();
+Document doc = db.parse(new InputSource(new StringReader(xml)));
+',
+        'vulnerability' => 'XML External Entity (XXE)',
+        'summary' => 'This Java code is vulnerable to XXE because it parses untrusted XML input without disabling external entity resolution.',
+        'resources' => [
+            'https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing',
+            'https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html'
+        ]
+    ],
+    [
+        'id' => 11,
+        'title' => 'Hardcoded Credentials (C#)',
+        'code' => 'using System;
+class Program {
+    static void Main() {
+        string user = "admin";
+        string pass = "password123";
+        Console.WriteLine("Connecting with user: " + user);
+        // ... connect to database ...
+    }
+}',
+        'vulnerability' => 'Hardcoded Credentials',
+        'summary' => 'This C# code is vulnerable because it contains hardcoded credentials, which can be extracted and abused by attackers.',
+        'resources' => [
+            'https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password',
+            'https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html'
+        ]
+    ],
+    [
+        'id' => 12,
+        'title' => 'Open Redirect (Go)',
+        'code' => 'package main
+import (
+    "net/http"
+)
+func handler(w http.ResponseWriter, r *http.Request) {
+    url := r.URL.Query().Get("next")
+    http.Redirect(w, r, url, http.StatusFound)
+}
+func main() {
+    http.HandleFunc("/redirect", handler)
+    http.ListenAndServe(":8080", nil)
+}',
+        'vulnerability' => 'Open Redirect',
+        'summary' => 'This Go code is vulnerable to open redirect because it redirects to a URL provided by the user without validation.',
+        'resources' => [
+            'https://owasp.org/www-community/attacks/Unvalidated_Redirects_and_Forwards',
+            'https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html'
+        ]
+    ],
+    [
+        'id' => 13,
+        'title' => 'Unrestricted File Upload (PHP)',
+        'code' => '<?php
+if (isset($_FILES["file"])) {
+    $uploadDir = "/var/www/uploads/";
+    $uploadFile = $uploadDir . basename($_FILES["file"]["name"]);
+    move_uploaded_file($_FILES["file"]["tmp_name"], $uploadFile);
+    echo "File uploaded!";
+}
+?>',
+        'vulnerability' => 'Unrestricted File Upload',
+        'summary' => 'This PHP code is vulnerable because it allows any file to be uploaded without checking the file type or content, which can lead to remote code execution.',
+        'resources' => [
+            'https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload',
+            'https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html'
+        ]
+    ],
+    [
+        'id' => 14,
+        'title' => 'Format String Vulnerability (C)',
+        'code' => '#include <stdio.h>
+int main(int argc, char *argv[]) {
+    char buf[100];
+    strcpy(buf, argv[1]);
+    printf(buf);
+    return 0;
+}',
+        'vulnerability' => 'Format String Vulnerability',
+        'summary' => 'This C code is vulnerable because it passes user input directly as the format string to printf, which can lead to memory disclosure or code execution.',
+        'resources' => [
+            'https://owasp.org/www-community/attacks/Format_string_attack',
+            'https://cwe.mitre.org/data/definitions/134.html'
+        ]
+    ],
+    [
+        'id' => 15,
+        'title' => 'Insecure Temporary File (Perl)',
+        'code' => 'my $tmpfile = "/tmp/myapp.tmp";
+open(my $fh, ">", $tmpfile) or die $!;
+print $fh "Sensitive data\n";
+close($fh);
+# ... later ...
+unlink $tmpfile;',
+        'vulnerability' => 'Insecure Temporary File',
+        'summary' => 'This Perl code is vulnerable because it creates a predictable temporary file, which can be exploited by attackers to overwrite or read sensitive data.',
+        'resources' => [
+            'https://owasp.org/www-community/vulnerabilities/Insecure_Temporary_File',
+            'https://cwe.mitre.org/data/definitions/377.html'
+        ]
     ]
 ];
