@@ -13,6 +13,23 @@ foreach ($snippets as $snippet) {
 if (!$currentSnippet) {
     $currentSnippet = $snippets[0];
 }
+
+// Group snippets strictly by language (extract from title)
+function get_language($title) {
+    if (preg_match('/\\(([^)]+)\\)/', $title, $matches)) {
+        return $matches[1];
+    }
+    return 'Other';
+}
+
+$langGroups = [];
+foreach ($snippets as $snippet) {
+    $lang = get_language($snippet['title']);
+    if (!isset($langGroups[$lang])) {
+        $langGroups[$lang] = [];
+    }
+    $langGroups[$lang][] = $snippet;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,13 +43,23 @@ if (!$currentSnippet) {
 <div class="container">
     <aside class="sidebar">
         <h2>Snippets</h2>
-        <ul id="snippet-list">
-            <?php foreach ($snippets as $snippet): ?>
-                <li class="snippet-item<?php if ($snippet['id'] === $currentSnippet['id']) echo ' active'; ?>" data-id="<?= $snippet['id'] ?>">
-                    <?= htmlspecialchars($snippet['title']) ?>
-                </li>
+        <div id="language-list">
+            <?php foreach ($langGroups as $lang => $snippetsInLang): ?>
+                <div class="lang-section">
+                    <div class="lang-header" data-lang="<?= htmlspecialchars($lang) ?>">
+                        <?= htmlspecialchars($lang) ?>
+                        <span class="dropdown-arrow">&#9660;</span>
+                    </div>
+                    <ul class="snippet-list" data-lang="<?= htmlspecialchars($lang) ?>">
+                        <?php foreach ($snippetsInLang as $snippet): ?>
+                            <li class="snippet-item<?php if ($snippet['id'] === $currentSnippet['id']) echo ' active'; ?>" data-id="<?= $snippet['id'] ?>">
+                                <?= htmlspecialchars(preg_replace('/ \([^)]*\)/', '', $snippet['title'])) ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
             <?php endforeach; ?>
-        </ul>
+        </div>
     </aside>
     <main class="main-content">
         <h1><?= htmlspecialchars($currentSnippet['title']) ?></h1>
@@ -54,7 +81,6 @@ if (!$currentSnippet) {
 </div>
 <script src="assets/script.js"></script>
 <script>
-// Pass snippets to JS for navigation
 window.snippets = <?= json_encode($snippets) ?>;
 window.currentId = <?= $currentSnippet['id'] ?>;
 </script>

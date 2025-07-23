@@ -103,3 +103,43 @@ body {
     background: #eebbc3;
     color: #232946;
 }
+
+.lang-section {
+    margin-bottom: 10px;
+}
+.lang-header {
+    padding: 10px 24px;
+    font-weight: bold;
+    background: #232946;
+    color: #eebbc3;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 4px solid #eebbc3;
+    border-radius: 2px;
+    transition: background 0.2s;
+}
+.lang-header:hover {
+    background: #121629;
+}
+.dropdown-arrow {
+    margin-left: 8px;
+    font-size: 0.9em;
+    transition: transform 0.2s;
+}
+.snippet-list {
+    list-style: none;
+    padding: 0 0 0 18px;
+    margin: 0;
+    display: none;
+}
+.lang-section:first-child .snippet-list {
+    display: block;
+}
+.lang-section.open .snippet-list {
+    display: block;
+}
+.lang-section.open .dropdown-arrow {
+    transform: rotate(180deg);
+}

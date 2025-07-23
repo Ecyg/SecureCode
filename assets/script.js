@@ -2,7 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const snippets = window.snippets;
     let currentId = window.currentId;
 
-    const snippetList = document.getElementById('snippet-list');
+    // Sidebar language dropdown logic (independent collapse/expand)
+    const langSections = document.querySelectorAll('.lang-section');
+    langSections.forEach((section, idx) => {
+        const header = section.querySelector('.lang-header');
+        header.addEventListener('click', function() {
+            section.classList.toggle('open');
+        });
+        // Open the first section by default
+        if (idx === 0) section.classList.add('open');
+    });
+
+    // Snippet selection logic
+    const snippetLists = document.querySelectorAll('.snippet-list');
     const mainContent = document.querySelector('.main-content');
     const dropdownBtn = document.getElementById('dropdown-btn');
     const dropdownContent = document.getElementById('dropdown-content');
@@ -19,20 +31,22 @@ document.addEventListener('DOMContentLoaded', function() {
             </ul>
         `;
         // Highlight active in sidebar
-        Array.from(snippetList.children).forEach(li => {
+        document.querySelectorAll('.snippet-item').forEach(li => {
             li.classList.toggle('active', parseInt(li.dataset.id) === snippet.id);
         });
         currentId = snippet.id;
     }
 
-    snippetList.addEventListener('click', function(e) {
-        if (e.target.classList.contains('snippet-item')) {
-            const id = parseInt(e.target.dataset.id);
-            const snippet = snippets.find(s => s.id === id);
-            if (snippet) {
-                renderSnippet(snippet);
+    snippetLists.forEach(list => {
+        list.addEventListener('click', function(e) {
+            if (e.target.classList.contains('snippet-item')) {
+                const id = parseInt(e.target.dataset.id);
+                const snippet = snippets.find(s => s.id === id);
+                if (snippet) {
+                    renderSnippet(snippet);
+                }
             }
-        }
+        });
     });
 
     nextBtn.addEventListener('click', function() {
