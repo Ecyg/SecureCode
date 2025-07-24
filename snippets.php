@@ -9,7 +9,7 @@ return [
 include "db.php";
 $username = $_GET["username"];
 $password = $_GET["password"];
-$query = "SELECT * FROM users WHERE username = \'$username\' AND password = \'$password\'";
+$query = "SELECT * FROM users WHERE username = \\'$username\\' AND password = \\'$password\\'";
 $result = mysqli_query($conn, $query);
 if ($row = mysqli_fetch_assoc($result)) {
     echo "Welcome, " . $row["username"];
@@ -18,7 +18,7 @@ if ($row = mysqli_fetch_assoc($result)) {
 }
 ?>',
         'vulnerability' => 'SQL Injection',
-        'summary' => 'This code is vulnerable to SQL Injection because user input is directly embedded into the SQL query without sanitization or parameterization.',
+        'summary' => 'This code is vulnerable to SQL Injection because user input is directly embedded into the SQL query without sanitization or parameterization. An attacker could submit a username like `admin\' --` to bypass authentication. To fix this, use prepared statements with parameterized queries, e.g., using `mysqli_prepare` and `mysqli_stmt_bind_param` in PHP, which separates SQL logic from user input and prevents injection.',
         'resources' => [
             'https://owasp.org/www-community/attacks/SQL_Injection',
             'https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html'
@@ -35,7 +35,7 @@ $all = file_get_contents("messages.txt");
 echo "<pre>$all</pre>";
 ?>',
         'vulnerability' => 'Cross-Site Scripting (XSS)',
-        'summary' => 'This code is vulnerable to XSS because it outputs user input directly to the page without escaping.',
+        'summary' => 'This code is vulnerable to XSS because it outputs user input directly to the page without escaping. An attacker could submit a message like `<script>alert(1)</script>` which would execute in the browser of anyone viewing the messages. To fix this, always escape output using `htmlspecialchars($string, ENT_QUOTES)` before rendering user data in HTML.',
         'resources' => [
             'https://owasp.org/www-community/attacks/xss/',
             'https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html'
@@ -56,7 +56,7 @@ if (file_exists($path)) {
 }
 ?>',
         'vulnerability' => 'Insecure Direct Object Reference (IDOR)',
-        'summary' => 'This code is vulnerable to IDOR because it allows users to access arbitrary files by manipulating the file parameter.',
+        'summary' => 'This code is vulnerable to IDOR because it allows users to access arbitrary files by manipulating the file parameter, e.g., by requesting `?file=../../etc/passwd`. To fix this, validate the file name against a whitelist of allowed files or ensure the user is authorized to access the requested file. Never allow direct access to file paths based on user input.',
         'resources' => [
             'https://owasp.org/www-community/attacks/Direct_Object_Reference',
             'https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html'
@@ -86,7 +86,7 @@ document.getElementById("commentForm").onsubmit = function(e) {
 </body>
 </html>',
         'vulnerability' => 'Cross-Site Scripting (XSS)',
-        'summary' => 'This JavaScript code is vulnerable to XSS because it writes untrusted data from the user directly into the DOM without sanitization.',
+        'summary' => 'This JavaScript code is vulnerable to XSS because it writes untrusted data from the user directly into the DOM without sanitization. An attacker could enter `<img src=x onerror=alert(1)>` as a comment, which would execute JavaScript in the browser. To fix this, use a library like DOMPurify to sanitize user input before inserting it into the DOM, or use `textContent` instead of `innerHTML`.',
         'resources' => [
             'https://owasp.org/www-community/attacks/xss/',
             'https://developer.mozilla.org/en-US/docs/Web/Security/Types_of_attacks#Cross-site_scripting_(XSS)'
@@ -110,7 +110,7 @@ def cat_file():
 if __name__ == "__main__":
     app.run()',
         'vulnerability' => 'Command Injection',
-        'summary' => 'This Python code is vulnerable to command injection because user input is concatenated into a shell command without validation or sanitization.',
+        'summary' => 'This Python code is vulnerable to command injection because user input is concatenated into a shell command without validation or sanitization. An attacker could supply `filename=foo;rm -rf /` to execute arbitrary commands. To fix this, use Python\'s `subprocess.run` with a list of arguments and never pass user input to the shell, or validate the filename strictly.',
         'resources' => [
             'https://owasp.org/www-community/attacks/Command_Injection',
             'https://cheatsheetseries.owasp.org/cheatsheets/Command_Injection_Prevention_Cheat_Sheet.html'
@@ -135,7 +135,7 @@ public class DeserializeServlet extends HttpServlet {
     }
 }',
         'vulnerability' => 'Insecure Deserialization',
-        'summary' => 'This Java code is vulnerable to insecure deserialization because it deserializes untrusted data from the request, which can lead to remote code execution.',
+        'summary' => 'This Java code is vulnerable to insecure deserialization because it deserializes untrusted data from the request, which can lead to remote code execution if a malicious object is sent. To fix this, avoid Java serialization for untrusted data, use safe data formats (like JSON), or use an allowlist of classes for deserialization.',
         'resources' => [
             'https://owasp.org/www-community/vulnerabilities/Deserialization_of_untrusted_data',
             'https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html'
@@ -163,7 +163,7 @@ const server = http.createServer((req, res) => {
 });
 server.listen(3000);',
         'vulnerability' => 'Path Traversal',
-        'summary' => 'This Node.js code is vulnerable to path traversal because it does not sanitize the file name, allowing attackers to access files outside the intended directory.',
+        'summary' => 'This Node.js code is vulnerable to path traversal because it does not sanitize the file name, allowing attackers to request files like `../../etc/passwd`. To fix this, validate the file name against a whitelist, use path normalization, and never allow `..` or absolute paths in user input.',
         'resources' => [
             'https://owasp.org/www-community/attacks/Path_Traversal',
             'https://cheatsheetseries.owasp.org/cheatsheets/Path_Traversal_Cheat_Sheet.html'
@@ -187,7 +187,7 @@ def debug():
 if __name__ == "__main__":
     app.run()',
         'vulnerability' => 'Sensitive Data Exposure',
-        'summary' => 'This Flask endpoint exposes sensitive data (a secret) in the response, which could be leaked to users or attackers.',
+        'summary' => 'This Flask endpoint exposes sensitive data (a secret) in the response and log file, which could be leaked to users or attackers. To fix this, never include secrets in error messages or logs accessible to users, and use environment variables or secure vaults for secrets.',
         'resources' => [
             'https://owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure',
             'https://cheatsheetseries.owasp.org/cheatsheets/Information_Leakage.html'
@@ -204,7 +204,7 @@ uri = URI.parse(url)
 response = Net::HTTP.get_response(uri)
 render plain: response.body',
         'vulnerability' => 'Server-Side Request Forgery (SSRF)',
-        'summary' => 'This Ruby code is vulnerable to SSRF because it fetches a URL provided by the user without validation, allowing access to internal resources.',
+        'summary' => 'This Ruby code is vulnerable to SSRF because it fetches a URL provided by the user without validation, allowing access to internal resources (e.g., `http://localhost:8080/admin`). To fix this, validate and restrict the allowed URLs, block internal IP ranges, and use allowlists for external domains.',
         'resources' => [
             'https://owasp.org/www-community/attacks/Server_Side_Request_Forgery',
             'https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html'
@@ -225,7 +225,7 @@ DocumentBuilder db = dbf.newDocumentBuilder();
 Document doc = db.parse(new InputSource(new StringReader(xml)));
 ',
         'vulnerability' => 'XML External Entity (XXE)',
-        'summary' => 'This Java code is vulnerable to XXE because it parses untrusted XML input without disabling external entity resolution.',
+        'summary' => 'This Java code is vulnerable to XXE because it parses untrusted XML input without disabling external entity resolution. An attacker could supply XML that reads local files or makes network requests. To fix this, disable external entity resolution on the XML parser using `dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)` and related features.',
         'resources' => [
             'https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_Processing',
             'https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html'
@@ -244,7 +244,7 @@ class Program {
     }
 }',
         'vulnerability' => 'Hardcoded Credentials',
-        'summary' => 'This C# code is vulnerable because it contains hardcoded credentials, which can be extracted and abused by attackers.',
+        'summary' => 'This C# code is vulnerable because it contains hardcoded credentials, which can be extracted and abused by attackers. To fix this, store credentials in environment variables or secure vaults, and never commit secrets to source control.',
         'resources' => [
             'https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password',
             'https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html'
@@ -266,7 +266,7 @@ func main() {
     http.ListenAndServe(":8080", nil)
 }',
         'vulnerability' => 'Open Redirect',
-        'summary' => 'This Go code is vulnerable to open redirect because it redirects to a URL provided by the user without validation.',
+        'summary' => 'This Go code is vulnerable to open redirect because it redirects to a URL provided by the user without validation. An attacker could use this to redirect users to a malicious site. To fix this, validate the `next` parameter against a whitelist of allowed URLs or only allow relative paths.',
         'resources' => [
             'https://owasp.org/www-community/attacks/Unvalidated_Redirects_and_Forwards',
             'https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html'
@@ -284,7 +284,7 @@ if (isset($_FILES["file"])) {
 }
 ?>',
         'vulnerability' => 'Unrestricted File Upload',
-        'summary' => 'This PHP code is vulnerable because it allows any file to be uploaded without checking the file type or content, which can lead to remote code execution.',
+        'summary' => 'This PHP code is vulnerable because it allows any file to be uploaded without checking the file type or content, which can lead to remote code execution if a PHP file is uploaded. To fix this, validate the file type and extension, use random file names, and store uploads outside the web root.',
         'resources' => [
             'https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload',
             'https://cheatsheetseries.owasp.org/cheatsheets/File_Upload_Cheat_Sheet.html'
@@ -301,7 +301,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }',
         'vulnerability' => 'Format String Vulnerability',
-        'summary' => 'This C code is vulnerable because it passes user input directly as the format string to printf, which can lead to memory disclosure or code execution.',
+        'summary' => 'This C code is vulnerable because it passes user input directly as the format string to printf, which can lead to memory disclosure or code execution. An attacker could supply `%x%x%x` to read memory. To fix this, always use a static format string, e.g., `printf("%s", buf);`.',
         'resources' => [
             'https://owasp.org/www-community/attacks/Format_string_attack',
             'https://cwe.mitre.org/data/definitions/134.html'
@@ -317,7 +317,7 @@ close($fh);
 # ... later ...
 unlink $tmpfile;',
         'vulnerability' => 'Insecure Temporary File',
-        'summary' => 'This Perl code is vulnerable because it creates a predictable temporary file, which can be exploited by attackers to overwrite or read sensitive data.',
+        'summary' => 'This Perl code is vulnerable because it creates a predictable temporary file, which can be exploited by attackers to overwrite or read sensitive data. To fix this, use secure temporary file creation functions like `File::Temp` that create files with random names and proper permissions.',
         'resources' => [
             'https://owasp.org/www-community/vulnerabilities/Insecure_Temporary_File',
             'https://cwe.mitre.org/data/definitions/377.html'
