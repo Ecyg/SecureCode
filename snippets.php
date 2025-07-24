@@ -5,18 +5,18 @@ return [
     [
         'id' => 1,
         'title' => 'SQL Injection (PHP)',
-        'code' => '<?php
-include "db.php";
-$username = $_GET["username"];
-$password = $_GET["password"];
-$query = "SELECT * FROM users WHERE username = \\'$username\\' AND password = \\'$password\\'";
-$result = mysqli_query($conn, $query);
-if ($row = mysqli_fetch_assoc($result)) {
-    echo "Welcome, " . $row["username"];
+        'code' => "<?php
+include \"db.php\";
+\$username = \$_GET[\"username\"];
+\$password = \$_GET[\"password\"];
+\$query = \"SELECT * FROM users WHERE username = '\$username' AND password = '\$password'\";
+\$result = mysqli_query(\$conn, \$query);
+if (\$row = mysqli_fetch_assoc(\$result)) {
+    echo \"Welcome, \" . \$row[\"username\"];
 } else {
-    echo "Invalid login.";
+    echo \"Invalid login.\";
 }
-?>',
+?>",
         'vulnerability' => 'SQL Injection',
         'summary' => 'This code is vulnerable to SQL Injection because user input is directly embedded into the SQL query without sanitization or parameterization. An attacker could submit a username like `admin\' --` to bypass authentication. To fix this, use prepared statements with parameterized queries, e.g., using `mysqli_prepare` and `mysqli_stmt_bind_param` in PHP, which separates SQL logic from user input and prevents injection.',
         'resources' => [
